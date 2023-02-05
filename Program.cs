@@ -13,6 +13,7 @@ internal class Program
         using (connection)
         {
             ReadUsers(connection);
+            ReadRoles(connection);
             // ReadUser();
             // CreateUser();
             // UpdateUser();
@@ -28,62 +29,13 @@ internal class Program
                 Console.WriteLine(user.Name);
         }
 
-        static void ReadUser()
+        static void ReadRoles(SqlConnection connection)
         {
-
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                var user = connection.Get<User>(1);
-
-                Console.WriteLine(user.Name);
-            }
+            var repository = new RoleRepository(connection);
+            var roles = repository.GetRoles();
+            foreach(var role in roles)
+                Console.WriteLine(role.Name);
         }
-
-        static void CreateUser()
-        {
-            var user = new User()
-            {
-                Name = "Gabriella Augusto Micheletti",
-                Email = "gabriella@gmail.com",
-                PasswordHash = "123456",
-                Bio = "Esposa do Michel",
-                Image = "http://",
-                Slug = "gabi-micheletti"
-            };
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                connection.Insert<User>(user);
-                Console.WriteLine("Cadastro realizado com sucesso!");
-            }
-        }
-
-        static void UpdateUser()
-        {
-            var user = new User()
-            {
-                Id = 2,
-                Name = "Gabriella Micheletti",
-                Email = "gabriella_micheletti@gmail.com",
-                PasswordHash = "123456",
-                Bio = "Estudante de Tecnologia,",
-                Image = "http://",
-                Slug = "gabi-micheletti"
-            };
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                connection.Update<User>(user);
-                Console.WriteLine("Cadastro atualizado com sucesso!");
-            }
-        }
-
-        static void DeleteUser()
-        {
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                var user = connection.Get<User>(2);
-                connection.Delete<User>(user);
-                Console.WriteLine("Cadastro excluído com sucesso!");
-            }
-        }
+    
     }
 }
